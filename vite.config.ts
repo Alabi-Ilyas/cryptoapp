@@ -9,6 +9,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  base: '/', // <- Make sure this is set
   server: {
     port: 3000,
     host: true
