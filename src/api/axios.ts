@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Set your base URL here (Vite uses import.meta.env)
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000/api",
+  baseURL: import.meta.env.VITE_API_URL ,
   withCredentials: true, // if you use cookies for auth
 });
 API.interceptors.request.use((config) => {
