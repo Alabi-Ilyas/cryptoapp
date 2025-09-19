@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "../api/axios"; // your axios instance
 import toast from "react-hot-toast";
+const API_URL = import.meta.env.VITE_API_URL;
 
 // --- Types ---
 interface UserProfile {
@@ -52,7 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // --- Login ---
   const login = async (email: string, password: string) => {
     try {
-      const res = await axios.post("http://localhost:4000/api/auth/login", {
+      const res = await axios.post(`${API_URL}/auth/login`, {
         email,
         password,
       });
@@ -76,7 +77,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     lastName: string
   ): Promise<void> => {
     try {
-      const response = await fetch("http://localhost:4000/api/auth/register", {
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -117,7 +118,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const token = localStorage.getItem("token");
       if (!token) return setLoading(false);
 
-      const res = await axios.get("http://localhost:4000/api/auth/me", {
+      const res = await axios.get(`${API_URL}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
