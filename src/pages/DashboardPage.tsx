@@ -281,47 +281,49 @@ const DashboardPage: React.FC = () => {
 
         {/* Navigation Tabs */}
         <div className="bg-gray-800 rounded-2xl border border-gray-700 mb-8">
-          <div className="flex border-b border-gray-700">
-            {[
-              {
-                id: "overview",
-                label: t("dashboard.tabs.overview"),
-                icon: PieChart,
-              },
-              {
-                id: "investments",
-                label: t("dashboard.tabs.investments"),
-                icon: TrendingUp,
-              },
-              {
-                id: "transactions",
-                label: t("dashboard.tabs.transactions"),
-                icon: History,
-              },
-              {
-                id: "settings",
-                label: t("dashboard.tabs.settings"),
-                icon: Settings,
-              },
-              {
-                id: "security",
-                label: t("dahboard.tabs.security"),
-                icon: Shield,
-              },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center px-6 py-4 text-sm font-medium transition-colors ${
-                  activeTab === tab.id
-                    ? "text-emerald-400 border-b-2 border-emerald-400"
-                    : "text-gray-400 hover:text-white"
-                }`}
-              >
-                <tab.icon className="w-4 h-4 mr-2" />
-                {tab.label}
-              </button>
-            ))}
+          <div className="overflow-x-auto border-b border-gray-700">
+            <div className="flex min-w-max">
+              {[
+                {
+                  id: "overview",
+                  label: t("dashboard.tabs.overview"),
+                  icon: PieChart,
+                },
+                {
+                  id: "investments",
+                  label: t("dashboard.tabs.investments"),
+                  icon: TrendingUp,
+                },
+                {
+                  id: "transactions",
+                  label: t("dashboard.tabs.transactions"),
+                  icon: History,
+                },
+                {
+                  id: "settings",
+                  label: t("dashboard.tabs.settings"),
+                  icon: Settings,
+                },
+                {
+                  id: "security",
+                  label: t("dashboard.tabs.security"),
+                  icon: Shield,
+                },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center px-6 py-4 text-sm font-medium transition-colors whitespace-nowrap ${
+                    activeTab === tab.id
+                      ? "text-emerald-400 border-b-2 border-emerald-400"
+                      : "text-gray-400 hover:text-white"
+                  }`}
+                >
+                  <tab.icon className="w-4 h-4 mr-2" />
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="p-6">

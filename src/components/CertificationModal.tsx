@@ -94,12 +94,12 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
                   <div>
                     <strong>Date of Incorporation:</strong>
                     <br />
-                    January 15, 2024
+                    January 14, 2016
                   </div>
                   <div>
                     <strong>Jurisdiction:</strong>
                     <br />
-                    England
+                    United Kingdom
                   </div>
                 </div>
               </div>
@@ -129,30 +129,6 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
 
           {/* Verification Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Regulatory Compliance */}
-            <div className="bg-gray-700 rounded-xl p-6">
-              <div className="flex items-center mb-4">
-                <Award className="w-6 h-6 text-emerald-400 mr-2" />
-                <h4 className="text-lg font-semibold text-white">
-                  Regulatory Compliance
-                </h4>
-              </div>
-              <div className="space-y-3">
-                {[
-                  "SEC Registered Investment Advisor",
-                  "FINRA Member Organization",
-                  "SIPC Protected Investments",
-                  "ISO 27001 Security Certified",
-                  "SOC 2 Type II Compliant",
-                ].map((item, index) => (
-                  <div key={index} className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-emerald-400 mr-2 flex-shrink-0" />
-                    <span className="text-gray-300 text-sm">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
             {/* Security Certifications */}
             <div className="bg-gray-700 rounded-xl p-6">
               <div className="flex items-center mb-4">
@@ -202,32 +178,6 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
                   {new Date().toISOString()}
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* External Verification Links */}
-          <div className="text-center space-y-4">
-            <h4 className="text-lg font-semibold text-white">
-              External Verification
-            </h4>
-            <div className="flex flex-wrap justify-center gap-4">
-              {[
-                { name: "SEC Database", url: "#" },
-                { name: "FINRA BrokerCheck", url: "#" },
-                { name: "Delaware Division of Corporations", url: "#" },
-                { name: "Better Business Bureau", url: "#" },
-              ].map((link, index) => (
-                <a
-                  key={index}
-                  href={link.url}
-                  className="flex items-center bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span className="text-sm">{link.name}</span>
-                  <ExternalLink className="w-4 h-4 ml-2" />
-                </a>
-              ))}
             </div>
           </div>
 
