@@ -17,18 +17,25 @@ interface UserProfile {
   updatedAt?: string;
   mfaEnabled?: boolean;
 }
+interface RegisterData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  captchaToken: string;
+}
+interface LoginData {
+  email: string;
+  password: string;
+  captchaToken: string;
+}
 
 interface AuthContextType {
   currentUser: UserProfile | null;
   userProfile: UserProfile | null; // ✅ add this
   loading: boolean;
-  login: (email: string, password: string) => Promise<UserProfile>;
-  register: (
-    email: string,
-    password: string,
-    firstName: string,
-    lastName: string
-  ) => Promise<void>;
+  login: (data: LoginData) => Promise<UserProfile>;
+  register: (data: RegisterData) => Promise<void>;
   logout: () => void;
 }
 
@@ -51,31 +58,56 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   // --- Login ---
-  const login = async (email: string, password: string) => {
+  // --- Login ---
+  const login = async ({
+    email,
+    password,
+    captchaToken,
+  }: LoginData): Promise<UserProfile> => {
     try {
-      const res = await axios.post(`${API_URL}/auth/login`, {
-        email,
-        password,
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          captchaToken, // ✅ include token
+        }),
       });
-      const user = res.data.user as UserProfile;
-      setCurrentUser(res.data.user);
-      setUserProfile(res.data.user);
-      localStorage.setItem("token", res.data.token); // store token for future requests
-      toast.success("Logged in successfully!");
-      return user;
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      // ✅ save JWT
+      localStorage.setItem("token", data.token);
+
+      // ✅ set user
+      setCurrentUser(data.user);
+      setUserProfile(data.user);
+
+      toast.success("Login successful!");
+      return data.user;
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to login");
+      console.error("Login error:", error);
+      toast.error(error.message || "Failed to login");
       throw error;
     }
   };
 
   // --- Register ---
-  const register = async (
-    email: string,
-    password: string,
-    firstName: string,
-    lastName: string
-  ): Promise<void> => {
+  // --- Register ---
+  const register = async ({
+    email,
+    password,
+    firstName,
+    lastName,
+    captchaToken,
+  }: RegisterData): Promise<void> => {
     try {
       const response = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
@@ -88,6 +120,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           firstName,
           lastName,
           role: "user",
+          captchaToken, // ✅ send token
         }),
       });
 
@@ -123,7 +156,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       setCurrentUser(res.data.user);
-      setUserProfile(res.data.user); 
+      setUserProfile(res.data.user);
     } catch (error) {
       setCurrentUser(null);
       setUserProfile(null); // ✅ clear on error

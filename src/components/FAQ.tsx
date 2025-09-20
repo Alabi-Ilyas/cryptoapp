@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 export type FAQType = {
   _id: string;
   question: string;
@@ -11,6 +15,7 @@ export type FAQType = {
 };
 
 const FAQ: React.FC = () => {
+  const { t } = useTranslation();
   const [faqs, setFaqs] = useState<FAQType[]>([]);
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,10 +27,10 @@ const FAQ: React.FC = () => {
 
   const loadFAQs = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/api/faq"); 
+      const response = await axios.get(`${API_URL}/faq`);
       setFaqs(response.data);
     } catch (error) {
-      console.error("Error loading FAQs:", error);
+      console.error(t("faq.errorLoading"), error);
     } finally {
       setLoading(false);
     }
@@ -47,7 +52,7 @@ const FAQ: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
-            <p className="text-gray-400">Loading FAQs...</p>
+            <p className="text-gray-400">{t("faq.loading")}</p>
           </div>
         </div>
       </section>
@@ -66,11 +71,10 @@ const FAQ: React.FC = () => {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Frequently Asked Questions
+            {t("faq.header")}
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-8">
-            Find answers to common questions about our investment platform,
-            security measures, and how to get started.
+            {t("faq.subHeader")}
           </p>
 
           {/* Search Bar */}
@@ -78,7 +82,7 @@ const FAQ: React.FC = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Search FAQs..."
+              placeholder={t("faq.searchPlaceholder")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
@@ -90,9 +94,7 @@ const FAQ: React.FC = () => {
         <div className="space-y-4">
           {filteredFAQs.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-400">
-                No FAQs found matching your search.
-              </p>
+              <p className="text-gray-400">{t("faq.noResults")}</p>
             </div>
           ) : (
             filteredFAQs.map((faq, index) => (
@@ -154,18 +156,15 @@ const FAQ: React.FC = () => {
         >
           <div className="bg-gray-800 rounded-2xl border border-gray-700 p-8">
             <h3 className="text-2xl font-bold text-white mb-4">
-              Still Have Questions?
+              {t("faq.contactHeader")}
             </h3>
-            <p className="text-gray-400 mb-6">
-              Our support team is available 24/7 to help you with any questions
-              or concerns you may have about your investments.
-            </p>
+            <p className="text-gray-400 mb-6">{t("faq.contactSubHeader")}</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-200">
-                Contact Support
+                {t("faq.contactButton")}
               </button>
               <button className="border border-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 hover:border-gray-500 transition-all duration-200">
-                Schedule Call
+                {t("faq.scheduleCallButton")}
               </button>
             </div>
           </div>

@@ -1,31 +1,41 @@
-import React, { useState } from "react";
-import { X, CreditCard, Mail, Wallet } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { X, Wallet } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useAuth } from "../contexts/AuthContext";
-import { createWithdrawalMethod } from "../api/axios";
 
-import toast from "react-hot-toast";
+// Mocking imports to make the component self-contained
+const useAuth = () => ({
+  currentUser: {
+    uid: "mockUserId123",
+  },
+});
+
+interface WithdrawalMethodData {
+  methodName: string;
+  accountDetails: string;
+  isDefault: boolean;
+}
+
+const createWithdrawalMethod = (data: WithdrawalMethodData) => {
+  console.log("Mock API call to create withdrawal method:", data);
+  return new Promise((resolve) => setTimeout(resolve, 1000));
+};
+
+const toast = {
+  success: (message: string) => console.log("Toast success:", message),
+  error: (message: string) => console.log("Toast error:", message),
+};
 
 const withdrawalMethodSchema = z
   .object({
-    type: z.enum(["bank", "paypal", "crypto"]),
-    accountName: z.string().optional(),
-    accountNumber: z.string().optional(),
-    bankName: z.string().optional(),
-    email: z.string().email().optional(),
-    address: z.string().optional(),
+    type: z.enum(["crypto"]), // Only crypto is now allowed
+    address: z.string().min(1, "Crypto address is required"),
     isPrimary: z.boolean().default(false),
   })
   .refine(
     (data) => {
-      if (data.type === "bank") {
-        return data.accountName && data.accountNumber && data.bankName;
-      }
-      if (data.type === "paypal") {
-        return data.email;
-      }
+      // Validation now only checks for crypto
       if (data.type === "crypto") {
         return data.address;
       }
@@ -55,31 +65,31 @@ const WithdrawalMethodModal: React.FC<WithdrawalMethodModalProps> = ({
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
     reset,
+    setValue
   } = useForm<WithdrawalMethodFormData>({
     resolver: zodResolver(withdrawalMethodSchema),
+    defaultValues: {
+      type: "crypto" // Set the default type to crypto
+    }
   });
 
-  const watchedType = watch("type");
+  // Set the value on initial load, since there's only one option
+  useEffect(() => {
+    if (isOpen) {
+      setValue("type", "crypto");
+    }
+  }, [isOpen, setValue]);
 
   const onSubmit = async (data: WithdrawalMethodFormData) => {
     if (!currentUser) return;
 
     setIsLoading(true);
     try {
-      const details: any = {};
-
-      if (data.type === "bank") {
-        details.accountName = data.accountName;
-        details.accountNumber = data.accountNumber;
-        details.bankName = data.bankName;
-      } else if (data.type === "paypal") {
-        details.email = data.email;
-      } else if (data.type === "crypto") {
-        details.address = data.address;
-      }
+      const details: { address: string } = {
+        address: data.address
+      };
 
       await createWithdrawalMethod({
         methodName: data.type,
@@ -118,98 +128,33 @@ const WithdrawalMethodModal: React.FC<WithdrawalMethodModalProps> = ({
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
-          {/* Method Type */}
+          {/* Method Type (simplified to only show Crypto) */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-3">
               Withdrawal Method
             </label>
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { value: "bank", label: "Bank", icon: CreditCard },
-                { value: "paypal", label: "PayPal", icon: Mail },
-                { value: "crypto", label: "Crypto", icon: Wallet },
-              ].map((method) => (
-                <label key={method.value} className="cursor-pointer">
-                  <input
-                    {...register("type")}
-                    type="radio"
-                    value={method.value}
-                    className="sr-only"
-                  />
-                  <div
-                    className={`flex flex-col items-center p-4 border-2 rounded-lg transition-all ${
-                      watchedType === method.value
-                        ? "border-emerald-500 bg-emerald-500/10"
-                        : "border-gray-600 hover:border-gray-500"
-                    }`}
-                  >
-                    <method.icon className="w-6 h-6 text-gray-400 mb-2" />
-                    <span className="text-sm text-white">{method.label}</span>
-                  </div>
-                </label>
-              ))}
+            <div className="grid grid-cols-1 gap-3">
+              <label className="cursor-pointer">
+                <input
+                  {...register("type")}
+                  type="radio"
+                  value="crypto"
+                  className="sr-only"
+                  checked
+                  readOnly
+                />
+                <div
+                  className="flex flex-col items-center p-4 border-2 rounded-lg transition-all border-emerald-500 bg-emerald-500/10"
+                >
+                  <Wallet className="w-6 h-6 text-gray-400 mb-2" />
+                  <span className="text-sm text-white">Crypto</span>
+                </div>
+              </label>
             </div>
-            {errors.type && (
-              <p className="text-red-400 text-sm mt-1">{errors.type.message}</p>
-            )}
           </div>
 
-          {/* Bank Details */}
-          {watchedType === "bank" && (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Account Name
-                </label>
-                <input
-                  {...register("accountName")}
-                  type="text"
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                  placeholder="John Doe"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Account Number
-                </label>
-                <input
-                  {...register("accountNumber")}
-                  type="text"
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                  placeholder="1234567890"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Bank Name
-                </label>
-                <input
-                  {...register("bankName")}
-                  type="text"
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                  placeholder="Chase Bank"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* PayPal Details */}
-          {watchedType === "paypal" && (
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                PayPal Email
-              </label>
-              <input
-                {...register("email")}
-                type="email"
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                placeholder="john@example.com"
-              />
-            </div>
-          )}
-
           {/* Crypto Details */}
-          {watchedType === "crypto" && (
+          <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Wallet Address
@@ -220,8 +165,11 @@ const WithdrawalMethodModal: React.FC<WithdrawalMethodModalProps> = ({
                 className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 placeholder="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
               />
+              {errors.address && (
+                <p className="text-red-400 text-sm mt-1">{errors.address.message}</p>
+              )}
             </div>
-          )}
+          </div>
 
           {/* Primary Method */}
           <div className="flex items-center">
@@ -238,7 +186,7 @@ const WithdrawalMethodModal: React.FC<WithdrawalMethodModalProps> = ({
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={isLoading || !watchedType}
+            disabled={isLoading}
             className="w-full bg-gradient-to-r from-emerald-500 to-blue-500 text-white py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? "Adding Method..." : "Add Withdrawal Method"}

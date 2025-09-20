@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, Users, DollarSign, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next'; // ✅ import useTranslation
 
 interface Stat {
   icon: React.ElementType;
   value: number;
-  label: string;
+  labelKey: string; // ✅ use translation key instead of raw label
   prefix?: string;
   suffix?: string;
   color: string;
 }
 
 const LiveStats: React.FC = () => {
+  const { t } = useTranslation(); // ✅ get t()
+  
   const [stats, setStats] = useState<Stat[]>([
-    { icon: Users, value: 0, label: 'Active Investors', suffix: '+', color: 'text-blue-400' },
-    { icon: DollarSign, value: 0, label: 'Total Invested', prefix: '$', suffix: 'M+', color: 'text-emerald-400' },
-    { icon: TrendingUp, value: 0, label: 'Success Rate', suffix: '%', color: 'text-green-400' },
-    { icon: Award, value: 0, label: 'Years Experience', suffix: '+', color: 'text-purple-400' }
+    { icon: Users, value: 0, labelKey: 'stats.active_investors', suffix: '+', color: 'text-blue-400' },
+    { icon: DollarSign, value: 0, labelKey: 'stats.total_invested', prefix: '$', suffix: 'M+', color: 'text-emerald-400' },
+    { icon: TrendingUp, value: 0, labelKey: 'stats.success_rate', suffix: '%', color: 'text-green-400' },
+    { icon: Award, value: 0, labelKey: 'stats.years_experience', suffix: '+', color: 'text-purple-400' }
   ]);
 
   const finalValues = [50000, 2.5, 98, 5];
@@ -71,10 +74,10 @@ const LiveStats: React.FC = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Trusted by Thousands Worldwide
+            {t('stats.heading')}
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Join our growing community of successful investors and start building your wealth today
+            {t('stats.subheading')}
           </p>
         </motion.div>
 
@@ -95,7 +98,7 @@ const LiveStats: React.FC = () => {
                 <div className={`text-4xl md:text-5xl font-bold ${stat.color} mb-2`}>
                   {stat.prefix}{stat.value.toLocaleString()}{stat.suffix}
                 </div>
-                <div className="text-gray-400 font-medium">{stat.label}</div>
+                <div className="text-gray-400 font-medium">{t(stat.labelKey)}</div>
               </div>
             </motion.div>
           ))}
@@ -111,7 +114,7 @@ const LiveStats: React.FC = () => {
         >
           <div className="flex items-center bg-gray-800 rounded-full px-6 py-3 border border-gray-700">
             <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse mr-3"></div>
-            <span className="text-gray-300 font-medium">Live Statistics - Updated in Real Time</span>
+            <span className="text-gray-300 font-medium">{t('stats.live_indicator')}</span>
           </div>
         </motion.div>
       </div>

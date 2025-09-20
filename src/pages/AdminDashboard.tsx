@@ -7,17 +7,16 @@ import {
   getAllWithdrawals,
   getAllDeposits,
   getAllTransactions,
-  updateWithdrawalStatus,
-  updateInvestmentStatus,
   getGlobalStats,
   approveTransaction,
 } from "../api/axios";
-
 import { User, Investment, Transaction } from "../type";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 const AdminDashboard: React.FC = () => {
+  const { t } = useTranslation();
   const { logout } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [users, setUsers] = useState<User[]>([]);
@@ -28,7 +27,7 @@ const AdminDashboard: React.FC = () => {
     totalUsers: 0,
     totalInvested: 0,
     totalProfit: 0,
-    pendingTransactions: 0, // ✅ renamed
+    pendingTransactions: 0,
   });
 
   useEffect(() => {
@@ -56,11 +55,11 @@ const AdminDashboard: React.FC = () => {
 
       setUsers(allUsers.data);
       setInvestments(allInvestments.data);
-      setTransactions(allTransactions.data); // use this instead of combining manually
+      setTransactions(allTransactions.data);
       setStats(globalStats.data);
     } catch (error) {
-      console.error("Error loading admin data:", error);
-      toast.error("Failed to load admin data");
+      console.error(t("admin.errorLoading"), error);
+      toast.error(t("admin.errorLoading"));
     } finally {
       setLoading(false);
     }
@@ -69,18 +68,15 @@ const AdminDashboard: React.FC = () => {
   const handleApproveTransaction = async (transactionId: string) => {
     try {
       await approveTransaction(transactionId);
-
-      // Remove from UI immediately
       setTransactions((prev) => prev.filter((t) => t._id !== transactionId));
 
-      // Refresh overview stats
       const statsRes = await getGlobalStats();
       setStats(statsRes.data);
 
-      toast.success("Transaction approved!");
+      toast.success(t("admin.transactionApproved"));
     } catch (err) {
       console.error(err);
-      toast.error("Failed to approve transaction");
+      toast.error(t("admin.errorApproveTransaction"));
     }
   };
 
@@ -97,7 +93,7 @@ const AdminDashboard: React.FC = () => {
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading admin dashboard...</p>
+          <p className="text-gray-400">{t("admin.loadingDashboard")}</p>
         </div>
       </div>
     );
@@ -106,21 +102,20 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Header */}
-      {/* Header */}
       <div className="bg-gray-800 border-b border-gray-700 shadow-md px-6 sm:px-8 lg:px-12 flex justify-between items-center py-4">
         <div className="flex items-center">
           <img
             src="/images/logo.jpg"
-            alt="Admin Logo"
+            alt={t("admin.logoAlt")}
             className="w-10 h-10 rounded-full mr-3"
           />
-          <h1 className="text-xl font-bold text-white">Admin Dashboard</h1>
+          <h1 className="text-xl font-bold text-white">{t("admin.dashboard")}</h1>
         </div>
         <button
           onClick={handleLogout}
           className="text-gray-400 hover:text-white transition"
         >
-          Logout
+          {t("admin.logout")}
         </button>
       </div>
 
@@ -136,7 +131,7 @@ const AdminDashboard: React.FC = () => {
                 : "text-gray-400 hover:text-white"
             } pb-1`}
           >
-            {tab}
+            {t(`admin.tabs.${tab}`)}
           </button>
         ))}
       </div>
@@ -146,15 +141,13 @@ const AdminDashboard: React.FC = () => {
         {activeTab === "overview" && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-gray-800 rounded-xl p-6">
-              <p className="text-gray-400 text-sm">Total Users</p>
-              <h3 className="text-2xl font-bold text-white">
-                {stats.totalUsers}
-              </h3>
+              <p className="text-gray-400 text-sm">{t("admin.stats.totalUsers")}</p>
+              <h3 className="text-2xl font-bold text-white">{stats.totalUsers}</h3>
               <Users className="h-6 w-6 text-emerald-400 mt-2" />
             </div>
 
             <div className="bg-gray-800 rounded-xl p-6">
-              <p className="text-gray-400 text-sm">Total Invested</p>
+              <p className="text-gray-400 text-sm">{t("admin.stats.totalInvested")}</p>
               <h3 className="text-2xl font-bold text-white">
                 ${stats.totalInvested.toLocaleString()}
               </h3>
@@ -162,7 +155,7 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             <div className="bg-gray-800 rounded-xl p-6">
-              <p className="text-gray-400 text-sm">Total Profit</p>
+              <p className="text-gray-400 text-sm">{t("admin.stats.totalProfit")}</p>
               <h3 className="text-2xl font-bold text-white">
                 ${stats.totalProfit.toLocaleString()}
               </h3>
@@ -170,16 +163,13 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             <div className="bg-gray-800 rounded-xl p-6">
-              <p className="text-gray-400 text-sm">Pending Transactions</p>
-              <h3 className="text-2xl font-bold text-white">
-                {stats.pendingTransactions}
-              </h3>
+              <p className="text-gray-400 text-sm">{t("admin.stats.pendingTransactions")}</p>
+              <h3 className="text-2xl font-bold text-white">{stats.pendingTransactions}</h3>
               <Clock className="h-6 w-6 text-red-400 mt-2" />
             </div>
           </div>
         )}
 
-        {/* Users Table */}
         {/* Users Table */}
         {activeTab === "users" && (
           <div className="overflow-x-auto bg-gray-800 rounded-lg p-4">
@@ -187,12 +177,12 @@ const AdminDashboard: React.FC = () => {
               <thead>
                 <tr className="border-b border-gray-700">
                   {[
-                    "Name",
-                    "Email",
-                    "Role",
-                    "Status",
-                    "Created",
-                    "Last Login",
+                    t("admin.table.name"),
+                    t("admin.table.email"),
+                    t("admin.table.role"),
+                    t("admin.table.status"),
+                    t("admin.table.created"),
+                    t("admin.table.lastLogin"),
                   ].map((header) => (
                     <th
                       key={header}
@@ -207,9 +197,7 @@ const AdminDashboard: React.FC = () => {
                 {users.map((u, idx) => (
                   <tr
                     key={u._id}
-                    className={`${
-                      idx % 2 === 0 ? "bg-gray-700" : ""
-                    } hover:bg-gray-600 transition`}
+                    className={`${idx % 2 === 0 ? "bg-gray-700" : ""} hover:bg-gray-600 transition`}
                   >
                     <td className="px-4 py-2">
                       {u.firstName} {u.lastName}
@@ -217,17 +205,17 @@ const AdminDashboard: React.FC = () => {
                     <td className="px-4 py-2">{u.email}</td>
                     <td className="px-4 py-2 capitalize">{u.role}</td>
                     <td className="px-4 py-2">
-                      {u.isVerified ? "Verified" : "Unverified"}
+                      {u.isVerified ? t("admin.verified") : t("admin.unverified")}
                     </td>
                     <td className="px-4 py-2">
                       {u.createdAt
                         ? format(new Date(u.createdAt), "MMM dd, yyyy")
-                        : "N/A"}
+                        : t("admin.n_a")}
                     </td>
                     <td className="px-4 py-2">
                       {u.lastLogin
                         ? format(new Date(u.lastLogin), "MMM dd, yyyy")
-                        : "Never"}
+                        : t("admin.never")}
                     </td>
                   </tr>
                 ))}
@@ -237,35 +225,36 @@ const AdminDashboard: React.FC = () => {
         )}
 
         {/* Transactions */}
-        {/* Transactions */}
         {activeTab === "transactions" && (
           <div>
-            <h2 className="text-white text-lg mb-4">Recent Transactions</h2>
+            <h2 className="text-white text-lg mb-4">{t("admin.recentTransactions")}</h2>
             <div className="space-y-3">
-              {transactions.map((t) => (
+              {transactions.map((transaction) => (
                 <div
-                  key={t._id}
+                  key={transaction._id}
                   className="bg-gray-800 p-4 rounded flex justify-between items-center"
                 >
                   <div>
                     <p>
-                      <span className="font-bold capitalize">{t.type}</span> – $
-                      {t.amount.toLocaleString()}
+                      <span className="font-bold capitalize">{transaction.type}</span> – ${transaction.amount.toLocaleString()}
                     </p>
-                    <p>Status: {t.status}</p>
+                    <p>
+                      {t("admin.status")}: {transaction.status}
+                    </p>
                   </div>
-                  {t.status === "pending" && (
+                  {transaction.status === "pending" && (
                     <button
-                      onClick={() => handleApproveTransaction(t._id)}
+                      onClick={() => handleApproveTransaction(transaction._id)}
                       className="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded-md text-sm font-semibold transition"
                     >
-                      Approve Transaction
+                      {t("admin.approveTransaction")}
                     </button>
                   )}
                 </div>
               ))}
+
               {transactions.length === 0 && (
-                <p className="text-gray-400">No transactions available.</p>
+                <p className="text-gray-400">{t("admin.noTransactions")}</p>
               )}
             </div>
           </div>

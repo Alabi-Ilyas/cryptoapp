@@ -10,10 +10,13 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { getPlans } from "../api/axios";
-import type { InvestmentPlan } from "../type"; // Corrected import path
+import type { InvestmentPlan } from "../type";
 import { useAuth } from "../contexts/AuthContext";
+import { useTranslation } from "react-i18next"; // ✅ i18n
 
 const InvestmentPlans: React.FC = () => {
+  const { t } = useTranslation();
+
   const [plans, setPlans] = useState<InvestmentPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const { currentUser } = useAuth();
@@ -27,12 +30,10 @@ const InvestmentPlans: React.FC = () => {
       const response = await getPlans();
       const investmentPlans = response.data;
 
-      // Filter for active plans based on the 'status' property
       const activePlans = investmentPlans.filter(
         (plan: InvestmentPlan) => plan?.status === "active"
       );
 
-      // Remove duplicates by `_id`
       const uniquePlans = Array.from(
         new Map(activePlans.map((plan: InvestmentPlan) => [plan._id, plan])).values()
       );
@@ -47,7 +48,6 @@ const InvestmentPlans: React.FC = () => {
 
   const getPlanIcon = (planName?: string) => {
     if (!planName || typeof planName !== "string") return DollarSign;
-
     if (planName.includes("AI")) return TrendingUp;
     if (planName.includes("Pro") || planName.includes("Alpha")) return Star;
     if (planName.includes("Guard")) return Shield;
@@ -60,10 +60,6 @@ const InvestmentPlans: React.FC = () => {
       "from-emerald-500 to-teal-500",
       "from-purple-500 to-pink-500",
       "from-orange-500 to-red-500",
-      "from-indigo-500 to-purple-500",
-      "from-green-500 to-emerald-500",
-      "from-yellow-500 to-orange-500",
-      "from-pink-500 to-rose-500",
     ];
     return colors[index % colors.length];
   };
@@ -74,7 +70,7 @@ const InvestmentPlans: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
-            <p className="text-gray-400">Loading investment plans...</p>
+            <p className="text-gray-400">{t("plans.loading")}</p>
           </div>
         </div>
       </section>
@@ -93,12 +89,10 @@ const InvestmentPlans: React.FC = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Choose Your Investment Plan
+            {t("plans.heading")}
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Select from our carefully crafted investment plans designed to
-            maximize your returns while minimizing risk through professional
-            portfolio management.
+            {t("plans.subheading")}
           </p>
         </motion.div>
 
@@ -110,14 +104,12 @@ const InvestmentPlans: React.FC = () => {
               plan?.planName?.includes("Unique") ||
               plan?.planName?.includes("AI");
 
-            // Use the profitPercent from the plan data
             const returnRate = plan.profitPercent ?? 0;
 
-            // These are placeholder features since they don't exist in the type
             const features = [
-              "Secure and safe",
-              "24/7 support",
-              "Daily payouts",
+              t("plans.features.secure"),
+              t("plans.features.support"),
+              t("plans.features.daily_payout"),
             ];
 
             return (
@@ -136,7 +128,7 @@ const InvestmentPlans: React.FC = () => {
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <div className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium flex items-center">
                       <Star className="w-4 h-4 mr-1" />
-                      Most Popular
+                      {t("plans.popular")}
                     </div>
                   </div>
                 )}
@@ -153,27 +145,27 @@ const InvestmentPlans: React.FC = () => {
                 {/* Plan Details */}
                 <div className="mb-6">
                   <h3 className="text-xl font-bold text-white mb-2">
-                    {plan?.planName || "Untitled Plan"}
+                    {plan?.planName || t("plans.untitled")}
                   </h3>
                   <div className="flex items-baseline mb-4">
                     <span className="text-4xl font-bold text-emerald-400">
                       {returnRate.toFixed(2) ?? 0}%
                     </span>
-                    <span className="text-gray-400 ml-2">return</span>
+                    <span className="text-gray-400 ml-2">{t("plans.return")}</span>
                   </div>
 
                   <div className="space-y-3 mb-6">
                     <div className="flex items-center text-gray-300">
                       <Clock className="w-4 h-4 mr-2 text-gray-400" />
                       <span className="text-sm">
-                        Duration: {plan.durationHours} hours
+                        {t("plans.duration")}: {plan.durationHours} hours
                       </span>
                     </div>
                     <div className="flex items-center text-gray-300">
                       <DollarSign className="w-4 h-4 mr-2 text-gray-400" />
                       <span className="text-sm">
-                        Min: ${plan.minAmount?.toLocaleString() || 0} - Max:{" "}
-                        ${plan.maxAmount?.toLocaleString() || "Unlimited"}
+                        {t("plans.amount_min")} ${plan.minAmount?.toLocaleString() || 0} -{" "}
+                        {t("plans.amount_max")} ${plan.maxAmount?.toLocaleString() || t("plans.unlimited")}
                       </span>
                     </div>
                   </div>
@@ -201,7 +193,7 @@ const InvestmentPlans: React.FC = () => {
                         index
                       )} text-white py-3 rounded-lg font-semibold text-center block hover:shadow-lg transition-all duration-200 group-hover:shadow-emerald-500/25`}
                     >
-                      Invest Now
+                      {t("plans.invest_now")}
                     </Link>
                   ) : (
                     <Link
@@ -210,7 +202,7 @@ const InvestmentPlans: React.FC = () => {
                         index
                       )} text-white py-3 rounded-lg font-semibold text-center block hover:shadow-lg transition-all duration-200 group-hover:shadow-emerald-500/25`}
                     >
-                      Get Started
+                      {t("plans.get_started")}
                     </Link>
                   )}
                 </div>
@@ -218,13 +210,11 @@ const InvestmentPlans: React.FC = () => {
                 {/* Profit Calculator */}
                 <div className="mt-4 p-3 bg-gray-700/50 rounded-lg">
                   <p className="text-gray-400 text-xs mb-1">
-                    Example: $1,000 investment
+                    {t("plans.example_investment")}: $1,000
                   </p>
                   <p className="text-emerald-400 font-bold">
-                    Profit: $
-                    {(
-                      1000 * (returnRate / 100) || 0
-                    ).toLocaleString()}
+                    {t("plans.profit")}: $
+                    {(1000 * (returnRate / 100) || 0).toLocaleString()}
                   </p>
                 </div>
               </motion.div>

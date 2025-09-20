@@ -1,65 +1,75 @@
 import React from 'react';
 import { Star, Quote } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-const testimonials = [
-  {
-    name: 'Sarah Johnson',
-    role: 'Business Owner',
-    location: 'New York, USA',
-    rating: 5,
-    text: 'Sovereign Assets has transformed my financial future. In just 6 months, I\'ve seen consistent returns that exceed my expectations. Their professional team and transparent approach give me complete confidence.',
-    profit: '$12,450',
-    duration: '6 months'
-  },
-  {
-    name: 'Michael Chen',
-    role: 'Software Engineer',
-    location: 'San Francisco, USA',
-    rating: 5,
-    text: 'As a tech professional, I appreciate their sophisticated algorithms and data-driven approach. The platform is intuitive, and the returns speak for themselves. Highly recommended!',
-    profit: '$8,750',
-    duration: '4 months'
-  },
-  {
-    name: 'Emma Rodriguez',
-    role: 'Marketing Director',
-    location: 'London, UK',
-    rating: 5,
-    text: 'I was skeptical about crypto investments until I found Sovereign Assets. Their educational resources and expert guidance helped me make informed decisions. The results have been outstanding.',
-    profit: '$15,200',
-    duration: '8 months'
-  },
-  {
-    name: 'David Thompson',
-    role: 'Retired Teacher',
-    location: 'Toronto, Canada',
-    rating: 5,
-    text: 'At 62, I thought it was too late to start investing in crypto. Sovereign Assets proved me wrong. Their conservative plans have provided steady income for my retirement.',
-    profit: '$6,890',
-    duration: '10 months'
-  },
-  {
-    name: 'Lisa Park',
-    role: 'Healthcare Professional',
-    location: 'Sydney, Australia',
-    rating: 5,
-    text: 'The customer support is exceptional. They\'re always available to answer questions and provide guidance. My investment has grown steadily, and I couldn\'t be happier.',
-    profit: '$9,340',
-    duration: '5 months'
-  },
-  {
-    name: 'James Wilson',
-    role: 'Financial Advisor',
-    location: 'Dubai, UAE',
-    rating: 5,
-    text: 'Even as a financial professional, I\'m impressed by their strategy and execution. Sovereign Assets has become a key part of my diversified portfolio.',
-    profit: '$22,100',
-    duration: '12 months'
-  }
-];
+import { useTranslation } from 'react-i18next';
 
 const Testimonials: React.FC = () => {
+  const { t } = useTranslation();
+
+  const testimonials = [
+    {
+      name: 'Sarah Johnson',
+      role: t('testimonials.roles.businessOwner'),
+      location: 'New York, USA',
+      rating: 5,
+      text: t('testimonials.texts.sarah'),
+      profit: '$12,450',
+      duration: '6 months'
+    },
+    {
+      name: 'Michael Chen',
+      role: t('testimonials.roles.softwareEngineer'),
+      location: 'San Francisco, USA',
+      rating: 5,
+      text: t('testimonials.texts.michael'),
+      profit: '$8,750',
+      duration: '4 months'
+    },
+    {
+      name: 'Emma Rodriguez',
+      role: t('testimonials.roles.marketingDirector'),
+      location: 'London, UK',
+      rating: 5,
+      text: t('testimonials.texts.emma'),
+      profit: '$15,200',
+      duration: '8 months'
+    },
+    {
+      name: 'David Thompson',
+      role: t('testimonials.roles.retiredTeacher'),
+      location: 'Toronto, Canada',
+      rating: 5,
+      text: t('testimonials.texts.david'),
+      profit: '$6,890',
+      duration: '10 months'
+    },
+    {
+      name: 'Lisa Park',
+      role: t('testimonials.roles.healthcareProfessional'),
+      location: 'Sydney, Australia',
+      rating: 5,
+      text: t('testimonials.texts.lisa'),
+      profit: '$9,340',
+      duration: '5 months'
+    },
+    {
+      name: 'James Wilson',
+      role: t('testimonials.roles.financialAdvisor'),
+      location: 'Dubai, UAE',
+      rating: 5,
+      text: t('testimonials.texts.james'),
+      profit: '$22,100',
+      duration: '12 months'
+    }
+  ];
+
+  const stats = [
+    { value: '4.9/5', label: t('testimonials.stats.averageRating') },
+    { value: '50K+', label: t('testimonials.stats.happyInvestors') },
+    { value: '98%', label: t('testimonials.stats.successRate') },
+    { value: '$2.5M+', label: t('testimonials.stats.totalProfits') }
+  ];
+
   return (
     <section className="py-20 bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -72,11 +82,10 @@ const Testimonials: React.FC = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            What Our Investors Say
+            {t('testimonials.header')}
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Don't just take our word for it. Here's what our satisfied investors 
-            have to say about their experience with Sovereign Assets Capital.
+            {t('testimonials.subHeader')}
           </p>
         </motion.div>
 
@@ -110,11 +119,11 @@ const Testimonials: React.FC = () => {
               <div className="bg-gray-700/50 rounded-lg p-4 mb-6">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gray-400 text-sm">Total Profit</p>
+                    <p className="text-gray-400 text-sm">{t('testimonials.labels.totalProfit')}</p>
                     <p className="text-emerald-400 font-bold text-lg">{testimonial.profit}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-gray-400 text-sm">Duration</p>
+                    <p className="text-gray-400 text-sm">{t('testimonials.labels.duration')}</p>
                     <p className="text-white font-medium">{testimonial.duration}</p>
                   </div>
                 </div>
@@ -147,16 +156,11 @@ const Testimonials: React.FC = () => {
         >
           <div className="bg-gray-800 rounded-2xl border border-gray-700 p-8 max-w-4xl mx-auto">
             <h3 className="text-2xl font-bold text-white mb-6">
-              Join Our Community of Successful Investors
+              {t('testimonials.trustHeader')}
             </h3>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-              {[
-                { value: '4.9/5', label: 'Average Rating' },
-                { value: '50K+', label: 'Happy Investors' },
-                { value: '98%', label: 'Success Rate' },
-                { value: '$2.5M+', label: 'Total Profits Paid' }
-              ].map((stat, index) => (
+              {stats.map((stat, index) => (
                 <div key={index} className="text-center">
                   <div className="text-2xl font-bold text-emerald-400 mb-1">{stat.value}</div>
                   <div className="text-gray-400 text-sm">{stat.label}</div>
@@ -166,10 +170,10 @@ const Testimonials: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-200">
-                Start Your Success Story
+                {t('testimonials.cta.start')}
               </button>
               <button className="border border-gray-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-700 hover:border-gray-500 transition-all duration-200">
-                Read More Reviews
+                {t('testimonials.cta.readMore')}
               </button>
             </div>
           </div>

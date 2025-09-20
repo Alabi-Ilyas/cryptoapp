@@ -19,7 +19,6 @@ import {
   getPlans,
   getUserWithdrawalMethods,
   createDeposit,
-  updateDepositStatus,
 } from "../api/axios";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
@@ -32,8 +31,11 @@ import type {
   WithdrawalMethod,
   InvestmentPlan,
 } from "../type";
+// Import the useTranslation hook
+import { useTranslation } from "react-i18next";
 
 const DashboardPage: React.FC = () => {
+  const { t } = useTranslation();
   const { currentUser, logout, userProfile } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [showBalance, setShowBalance] = useState(true);
@@ -68,11 +70,11 @@ const DashboardPage: React.FC = () => {
         method: selectedMethod,
         transactionId,
       });
-      toast.success("Deposit requested! Awaiting admin approval.");
+      toast.success(t("dashboard.depositRequested"));
       loadDashboardData(); // refresh dashboard data
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create deposit");
+      toast.error(t("dashboard.deposit_failed"));
     }
   };
 
@@ -80,7 +82,6 @@ const DashboardPage: React.FC = () => {
     if (currentUser) {
       loadDashboardData();
     } else {
-      // if no user, stop loading spinner
       setLoading(false);
     }
   }, [currentUser]);
@@ -105,13 +106,12 @@ const DashboardPage: React.FC = () => {
       setWithdrawalMethods(methodsRes?.data || []);
     } catch (error) {
       console.error("Error loading dashboard data:", error);
-      toast.error("Failed to load dashboard data");
+      toast.error(t("dashboard.failed_to_load"));
     } finally {
       setLoading(false);
     }
   };
 
-  // --- Helpers to safely parse/format dates ---
   const parseDate = (value?: string | number | null) => {
     if (!value && value !== 0) return null;
     const d =
@@ -124,7 +124,6 @@ const DashboardPage: React.FC = () => {
     return d ? format(d, fmt) : "N/A";
   };
 
-  // Calculate dashboard stats
   const totalInvested = investments.reduce(
     (sum, inv) => sum + (inv.amount || 0),
     0
@@ -136,7 +135,6 @@ const DashboardPage: React.FC = () => {
   const activeInvestments = investments.filter(
     (inv) => inv.status === "active"
   ).length;
-  const availableBalance = totalProfit; // Simplified for demo
 
   const handleLogout = async () => {
     try {
@@ -161,7 +159,7 @@ const DashboardPage: React.FC = () => {
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading your dashboard...</p>
+          <p className="text-gray-400">{t("dashboard.loading")}</p>
         </div>
       </div>
     );
@@ -180,9 +178,13 @@ const DashboardPage: React.FC = () => {
                 className="w-10 h-10 rounded-full mr-3"
               />
               <div>
-                <h1 className="text-xl font-bold text-white">Dashboard</h1>
+                <h1 className="text-xl font-bold text-white">
+                  {t("dashboard.title")}
+                </h1>
                 <p className="text-gray-400 text-sm">
-                  Welcome back, {userProfile?.firstName || "User"}
+                  {t("dashboard.welcome", {
+                    name: userProfile?.firstName || "User",
+                  })}
                 </p>
               </div>
             </div>
@@ -191,7 +193,7 @@ const DashboardPage: React.FC = () => {
               className="flex items-center text-gray-400 hover:text-white transition-colors"
             >
               <LogOut className="w-5 h-5 mr-2" />
-              Logout
+              {t("dashboard.logout")}
             </button>
           </div>
         </div>
@@ -217,7 +219,9 @@ const DashboardPage: React.FC = () => {
               </button>
             </div>
             <div>
-              <p className="text-gray-400 text-sm">Total Balance</p>
+              <p className="text-gray-400 text-sm">
+                {t("dashboard.total_balance")}
+              </p>
               <p className="text-2xl font-bold text-white">
                 {showBalance
                   ? `$${(totalInvested + totalProfit).toLocaleString()}`
@@ -233,7 +237,9 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
             <div>
-              <p className="text-gray-400 text-sm">Total Invested</p>
+              <p className="text-gray-400 text-sm">
+                {t("dashboard.totalInvested")}
+              </p>
               <p className="text-2xl font-bold text-white">
                 {showBalance ? `$${totalInvested.toLocaleString()}` : "****"}
               </p>
@@ -247,7 +253,9 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
             <div>
-              <p className="text-gray-400 text-sm">Total Profit</p>
+              <p className="text-gray-400 text-sm">
+                {t("dashboard.totalProfit")}
+              </p>
               <p className="text-2xl font-bold text-white">
                 {showBalance ? `$${totalProfit.toLocaleString()}` : "****"}
               </p>
@@ -261,7 +269,9 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
             <div>
-              <p className="text-gray-400 text-sm">Active Investments</p>
+              <p className="text-gray-400 text-sm">
+                {t("dashboard.active_investments")}
+              </p>
               <p className="text-2xl font-bold text-white">
                 {activeInvestments}
               </p>
@@ -273,11 +283,31 @@ const DashboardPage: React.FC = () => {
         <div className="bg-gray-800 rounded-2xl border border-gray-700 mb-8">
           <div className="flex border-b border-gray-700">
             {[
-              { id: "overview", label: "Overview", icon: PieChart },
-              { id: "investments", label: "Investments", icon: TrendingUp },
-              { id: "transactions", label: "Transactions", icon: History },
-              { id: "settings", label: "Settings", icon: Settings },
-              { id: "security", label: "Security", icon: Shield },
+              {
+                id: "overview",
+                label: t("dashboard.tabs.overview"),
+                icon: PieChart,
+              },
+              {
+                id: "investments",
+                label: t("dashboard.tabs.investments"),
+                icon: TrendingUp,
+              },
+              {
+                id: "transactions",
+                label: t("dashboard.tabs.transactions"),
+                icon: History,
+              },
+              {
+                id: "settings",
+                label: t("dashboard.tabs.settings"),
+                icon: Settings,
+              },
+              {
+                id: "security",
+                label: t("dahboard.tabs.security"),
+                icon: Shield,
+              },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -300,14 +330,14 @@ const DashboardPage: React.FC = () => {
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-bold text-white">
-                    Portfolio Overview
+                    {t("dashboard.portfolio_overview")}
                   </h2>
                   <button
                     onClick={() => setShowInvestmentModal(true)}
                     className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transition-all"
                   >
                     <Plus className="w-4 h-4 mr-2 inline" />
-                    New Investment
+                    {t("dashboard.new_investment")}
                   </button>
                 </div>
 
@@ -315,22 +345,19 @@ const DashboardPage: React.FC = () => {
                   <div className="text-center py-12">
                     <PieChart className="w-16 h-16 text-gray-600 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-400 mb-2">
-                      No Investments Yet
+                      {t("dashboard.no_investments")}
                     </h3>
-                    <p className="text-gray-500 mb-4">
-                      Start your investment journey today
-                    </p>
+                    <p className="text-gray-500 mb-4">{t("start_journey")}</p>
                     <button
                       onClick={() => setShowInvestmentModal(true)}
                       className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg transition-all"
                     >
-                      Make Your First Investment
+                      {t("dashboard.first_investment")}
                     </button>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {investments.slice(0, 4).map((investment) => {
-                      // Find plan by _id
                       const plan = investmentPlans.find(
                         (p) => p._id === investment.plan
                       );
@@ -368,12 +395,14 @@ const DashboardPage: React.FC = () => {
                                   : "bg-yellow-500/20 text-yellow-400"
                               }`}
                             >
-                              {investment.status}
+                              {t(`status.${investment.status}`)}
                             </span>
                           </div>
                           <div className="mb-3">
                             <div className="flex justify-between text-sm mb-1">
-                              <span className="text-gray-400">Progress</span>
+                              <span className="text-gray-400">
+                                {t("dashboard.progress")}
+                              </span>
                               <span className="text-gray-400">
                                 {Math.min(Math.max(progress, 0), 100).toFixed(
                                   0
@@ -395,7 +424,8 @@ const DashboardPage: React.FC = () => {
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-400">
-                              Profit: ${investment.profit?.toLocaleString()}
+                              {t("dashboard.profit")}: $
+                              {investment.profit?.toLocaleString()}
                             </span>
                             <span className="text-gray-400">
                               {safeFormat(investment.endDate)}
@@ -414,14 +444,14 @@ const DashboardPage: React.FC = () => {
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-bold text-white">
-                    My Investments
+                    {t("dashboard.my_investments")}
                   </h2>
                   <button
                     onClick={() => setShowInvestmentModal(true)}
                     className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transition-all"
                   >
                     <Plus className="w-4 h-4 mr-2 inline" />
-                    New Investment
+                    {t("dashboard.new_investment")}
                   </button>
                 </div>
 
@@ -430,19 +460,19 @@ const DashboardPage: React.FC = () => {
                     <thead>
                       <tr className="border-b border-gray-700">
                         <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                          Plan
+                          {t("dashboard.table.plan")}
                         </th>
                         <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                          Amount
+                          {t("dashboard.table.amount")}
                         </th>
                         <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                          Profit
+                          {t("dashboard.table.profit")}
                         </th>
                         <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                          Status
+                          {t("dashboard.table.status")}
                         </th>
                         <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                          End Date
+                          {t("dashboard.table.end_date")}
                         </th>
                       </tr>
                     </thead>
@@ -475,7 +505,7 @@ const DashboardPage: React.FC = () => {
                                     : "bg-yellow-500/20 text-yellow-400"
                                 }`}
                               >
-                                {investment.status}
+                                {t(`status.${investment.status}`)}
                               </span>
                             </td>
                             <td className="py-3 px-4 text-gray-400">
@@ -494,7 +524,7 @@ const DashboardPage: React.FC = () => {
             {activeTab === "transactions" && (
               <div className="space-y-6">
                 <h2 className="text-xl font-bold text-white">
-                  Transaction History
+                  {t("dashboard.transaction_history")}
                 </h2>
 
                 <div className="overflow-x-auto">
@@ -502,19 +532,19 @@ const DashboardPage: React.FC = () => {
                     <thead>
                       <tr className="border-b border-gray-700">
                         <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                          Date
+                          {t("dashboard.table.date")}
                         </th>
                         <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                          Type
+                          {t("dashboard.table.type")}
                         </th>
                         <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                          Amount
+                          {t("dashboard.table.amount")}
                         </th>
                         <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                          Status
+                          {t("dashboard.table.status")}
                         </th>
                         <th className="text-left py-3 px-4 text-gray-400 font-medium">
-                          Reference
+                          {t("dashboard.table.reference")}
                         </th>
                       </tr>
                     </thead>
@@ -556,7 +586,7 @@ const DashboardPage: React.FC = () => {
                                   : "bg-red-500/20 text-red-400"
                               }`}
                             >
-                              {transaction.status}
+                              {t(`status.${transaction.status}`)}
                             </span>
                           </td>
                           <td className="py-3 px-4 text-gray-400">
@@ -574,19 +604,19 @@ const DashboardPage: React.FC = () => {
             {activeTab === "settings" && (
               <div className="space-y-6">
                 <h2 className="text-xl font-bold text-white">
-                  Account Settings
+                  {t("dashboard.account_settings")}
                 </h2>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Profile Information */}
                   <div className="bg-gray-700 rounded-xl p-6 border border-gray-600">
                     <h3 className="text-lg font-medium text-white mb-4">
-                      Profile Information
+                      {t("dashboard.profile_info")}
                     </h3>
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm text-gray-400 mb-1">
-                          Full Name
+                          {t("dashboard.full_name")}
                         </label>
                         <p className="text-white">
                           {userProfile?.firstName} {userProfile?.lastName}
@@ -594,13 +624,13 @@ const DashboardPage: React.FC = () => {
                       </div>
                       <div>
                         <label className="block text-sm text-gray-400 mb-1">
-                          Email
+                          {t("dashboard.email")}
                         </label>
                         <p className="text-white">{userProfile?.email}</p>
                       </div>
                       <div>
                         <label className="block text-sm text-gray-400 mb-1">
-                          Member Since
+                          {t("dashboard.member_since")}
                         </label>
                         <p className="text-white">
                           {userProfile?.createdAt
@@ -615,20 +645,20 @@ const DashboardPage: React.FC = () => {
                   <div className="bg-gray-700 rounded-xl p-6 border border-gray-600">
                     <div className="flex justify-between items-center mb-4">
                       <h3 className="text-lg font-medium text-white">
-                        Withdrawal Methods
+                        {t("dashboard.withdrawal_methods")}
                       </h3>
                       <button
                         onClick={() => setShowWithdrawalModal(true)}
                         className="bg-emerald-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-emerald-600 transition-colors"
                       >
                         <Plus className="w-4 h-4 mr-1 inline" />
-                        Add
+                        {t("dashboard.add_method")}
                       </button>
                     </div>
                     <div className="space-y-3">
                       {withdrawalMethods.length === 0 ? (
                         <p className="text-gray-400 text-sm">
-                          No withdrawal methods added yet
+                          {t("dashboard.no_methods")}
                         </p>
                       ) : (
                         withdrawalMethods.map((method) => (
@@ -640,11 +670,7 @@ const DashboardPage: React.FC = () => {
                               <CreditCard className="w-5 h-5 text-gray-400 mr-3" />
                               <div>
                                 <p className="text-white text-sm font-medium">
-                                  {method.methodName === "bank"
-                                    ? "Bank Account"
-                                    : method.methodName === "paypal"
-                                    ? "PayPal"
-                                    : "Crypto Wallet"}
+                                  {t(`method_names.${method.methodName}`)}
                                 </p>
                                 <p className="text-gray-400 text-xs">
                                   {method.accountDetails}
@@ -653,7 +679,7 @@ const DashboardPage: React.FC = () => {
                             </div>
                             {method.isDefault && (
                               <span className="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs">
-                                Primary
+                                {t("dashboard.primary")}
                               </span>
                             )}
                           </div>
@@ -669,7 +695,7 @@ const DashboardPage: React.FC = () => {
             {activeTab === "security" && (
               <div className="space-y-6">
                 <h2 className="text-xl font-bold text-white">
-                  Security Settings
+                  {t("dashboard.security_settings")}
                 </h2>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -678,11 +704,11 @@ const DashboardPage: React.FC = () => {
                     <div className="flex items-center mb-4">
                       <Shield className="w-6 h-6 text-emerald-400 mr-2" />
                       <h3 className="text-lg font-medium text-white">
-                        Two-Factor Authentication
+                        {t("dashboard.two_factor_auth")}
                       </h3>
                     </div>
                     <p className="text-gray-400 text-sm mb-4">
-                      Add an extra layer of security to your account with 2FA
+                      {t("dashboard.2fa_description")}
                     </p>
                     <div className="flex items-center justify-between">
                       <div>
@@ -693,14 +719,19 @@ const DashboardPage: React.FC = () => {
                               : "bg-red-500/20 text-red-400"
                           }`}
                         >
-                          {userProfile?.mfaEnabled ? "Enabled" : "Disabled"}
+                          {userProfile?.mfaEnabled
+                            ? t("dashboard.2fa_enabled")
+                            : t("dashboard.2fa_disabled")}
                         </span>
                       </div>
                       <button
                         onClick={() => setShowMFASetup(true)}
                         className="bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-600 transition-colors"
                       >
-                        {userProfile?.mfaEnabled ? "Manage" : "Enable"} 2FA
+                        {userProfile?.mfaEnabled
+                          ? t("dashboard.2fa_manage")
+                          : t("dashboard.2fa_enable")}{" "}
+                        2FA
                       </button>
                     </div>
                   </div>
@@ -708,17 +739,23 @@ const DashboardPage: React.FC = () => {
                   {/* Security Status */}
                   <div className="bg-gray-700 rounded-xl p-6 border border-gray-600">
                     <h3 className="text-lg font-medium text-white mb-4">
-                      Security Status
+                      {t("dashboard.security_status")}
                     </h3>
                     <div className="space-y-3">
                       {[
-                        { label: "SSL/TLS Encryption", status: true },
-                        { label: "Account Verification", status: true },
+                        { label: t("dashboard.ssl_encryption"), status: true },
                         {
-                          label: "Two-Factor Auth",
+                          label: t("dashboard.account_verification"),
+                          status: true,
+                        },
+                        {
+                          label: t("dashboard.two_factor_auth"),
                           status: userProfile?.mfaEnabled || false,
                         },
-                        { label: "Secure Connection", status: true },
+                        {
+                          label: t("dashboard.secure_connection"),
+                          status: true,
+                        },
                       ].map((item, index) => (
                         <div
                           key={index}
@@ -734,7 +771,9 @@ const DashboardPage: React.FC = () => {
                                 : "bg-red-500/20 text-red-400"
                             }`}
                           >
-                            {item.status ? "Active" : "Inactive"}
+                            {item.status
+                              ? t("dashboard.status_active")
+                              : t("dashboard.status_inactive")}
                           </span>
                         </div>
                       ))}

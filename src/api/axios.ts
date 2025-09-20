@@ -22,10 +22,11 @@ export const registerUser = (data: {
   email: string;
   password: string;
   role?: string;
+  captchaToken: string
 }) => API.post("/auth/register", data);
 
 // Login
-export const loginUser = (data: { email: string; password: string }) =>
+export const loginUser = (data: { email: string; password: string,captchaToken: string }) =>
   API.post("/auth/login", data);
 
 // Logout

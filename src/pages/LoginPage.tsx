@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,16 +6,21 @@ import { z } from "zod";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import toast from "react-hot-toast";
+import ReCAPTCHA from "react-google-recaptcha";
+import { useTranslation } from "react-i18next";
 
 const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string().email("errors.invalidEmail"),
+  password: z.string().min(6, "errors.passwordMin"),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
 const LoginPage: React.FC = () => {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -28,17 +33,29 @@ const LoginPage: React.FC = () => {
   });
 
   const onSubmit = async (data: LoginFormData) => {
+    const token = captchaToken || (await recaptchaRef.current?.executeAsync());
+    if (!token) {
+      toast.error(t("errors.captchaRequired"));
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
+
     try {
-      const user = await login(data.email, data.password);
+      const user = await login({
+        email: data.email,
+        password: data.password,
+        captchaToken: token,
+      });
 
       if (user.role === "admin") {
-        navigate("/admin"); // ✅ redirect admins
+        navigate("/admin");
       } else {
-        navigate("/dashboard"); // ✅ regular users
+        navigate("/dashboard");
       }
     } catch (error) {
-      // Error is already handled in auth context
+      recaptchaRef.current?.reset();
+      setCaptchaToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -47,128 +64,112 @@ const LoginPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
       <div className="max-w-md w-full">
-        {/* Back to Home */}
         <Link
           to="/"
           className="inline-flex items-center text-emerald-400 hover:text-emerald-300 mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Home
+          {t("login.backToHome")}
         </Link>
 
-        {/* Logo */}
         <div className="text-center mb-8">
           <img
             src="/images/logo.jpg"
-            alt="Sovereign Assets Capital"
+            alt={t("appName")}
             className="w-16 h-16 mx-auto mb-4 rounded-full"
           />
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-gray-400">Sign in to your account to continue</p>
+          <h1 className="text-3xl font-bold text-white mb-2">{t("login.welcome")}</h1>
+          <p className="text-gray-400">{t("login.signInSubheading")}</p>
         </div>
 
-        {/* Login Form */}
         <div className="bg-gray-800 rounded-2xl p-8 border border-gray-700">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Email Address
+                {t("login.email")}
               </label>
               <input
                 {...register("email")}
                 type="email"
                 className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                placeholder="Enter your email"
+                placeholder={t("login.emailPlaceholder")}
               />
               {errors.email && (
-                <p className="text-red-400 text-sm mt-1">
-                  {errors.email.message}
-                </p>
+                <p className="text-red-400 text-sm mt-1">{t(errors.email.message as string)}</p>
               )}
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Password
+                {t("login.password")}
               </label>
               <div className="relative">
                 <input
                   {...register("password")}
                   type={showPassword ? "text" : "password"}
                   className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all pr-12"
-                  placeholder="Enter your password"
+                  placeholder={t("login.passwordPlaceholder")}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
                 >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-400 text-sm mt-1">
-                  {errors.password.message}
-                </p>
+                <p className="text-red-400 text-sm mt-1">{t(errors.password.message as string)}</p>
               )}
             </div>
 
-            {/* Forgot Password */}
             <div className="text-right">
               <button
                 type="button"
                 className="text-emerald-400 hover:text-emerald-300 text-sm transition-colors"
                 onClick={() =>
-                  toast("Password reset feature coming soon!", {
-                    icon: "ℹ️",
-                  })
+                  toast(t("login.forgotFeature"), { icon: "ℹ️" })
                 }
               >
-                Forgot your password?
+                {t("login.forgot")}
               </button>
             </div>
 
-            {/* Submit Button */}
+            <div className="flex justify-center">
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY as string}
+                onChange={(token) => setCaptchaToken(token)}
+                theme="dark"
+              />
+            </div>
+
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !captchaToken}
               className="w-full bg-gradient-to-r from-emerald-500 to-blue-500 text-white py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Signing In..." : "Sign In"}
+              {isLoading ? t("login.signingIn") : t("login.signIn")}
             </button>
           </form>
 
-          {/* Register Link */}
           <div className="mt-6 text-center">
             <p className="text-gray-400">
-              Don't have an account?{" "}
+              {t("login.noAccount")}&nbsp;
               <Link
                 to="/register"
                 className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
               >
-                Create Account
+                {t("register.createAccount")}
               </Link>
             </p>
           </div>
 
-          {/* Demo Credentials */}
           <div className="mt-6 p-4 bg-gray-700 rounded-lg border border-gray-600">
-            <h3 className="text-sm font-medium text-gray-300 mb-2">
-              Demo Credentials:
-            </h3>
+            <h3 className="text-sm font-medium text-gray-300 mb-2">{t("login.demoCredentials")}</h3>
             <div className="text-xs text-gray-400 space-y-1">
-              <p>
-                <strong>Admin:</strong> admin@sovereignassets.com / admin123
-              </p>
-              <p>
-                <strong>User:</strong> john@example.com / user123
-              </p>
+              <p><strong>{t("login.demoAdmin")}</strong></p>
+              <p><strong>{t("login.demoUser")}</strong></p>
             </div>
           </div>
         </div>

@@ -99,7 +99,7 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
                   <div>
                     <strong>Jurisdiction:</strong>
                     <br />
-                    Delaware, United States
+                    England
                   </div>
                 </div>
               </div>

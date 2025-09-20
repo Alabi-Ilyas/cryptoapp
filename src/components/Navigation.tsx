@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, User, LogIn, UserPlus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import { useTranslation } from 'react-i18next'; // ✅ import useTranslation
 
 const Navigation: React.FC = () => {
+  const { t } = useTranslation(); // ✅ get t()
   const [isOpen, setIsOpen] = useState(false);
   const { currentUser, userProfile, logout } = useAuth();
   const navigate = useNavigate();
@@ -25,33 +28,34 @@ const Navigation: React.FC = () => {
           <Link to="/" className="flex items-center space-x-3">
             <img 
               src="/images/logo.jpg" 
-              alt="Sovereign Assets Capital" 
+              alt={t('appName')} 
               className="w-10 h-10 rounded-full"
             />
             <div>
-              <h1 className="text-xl font-bold text-white">Sovereign Assets</h1>
-              <p className="text-xs text-gray-400">Capital</p>
+              <h1 className="text-xl font-bold text-white">{t('appName')}</h1>
+              <p className="text-xs text-gray-400">{t('appTagline')}</p>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/" className="text-gray-300 hover:text-white transition-colors">
-              Home
+              {t('nav.home')}
             </Link>
             <a href="#plans" className="text-gray-300 hover:text-white transition-colors">
-              Plans
+              {t('nav.plans')}
             </a>
             <a href="#about" className="text-gray-300 hover:text-white transition-colors">
-              About
+              {t('nav.about')}
             </a>
             <a href="#faq" className="text-gray-300 hover:text-white transition-colors">
-              FAQ
+              {t('nav.faq')}
             </a>
           </div>
 
-          {/* Auth Buttons */}
+          {/* Auth Buttons + Language Switcher */}
           <div className="hidden md:flex items-center space-x-4">
+            <LanguageSwitcher />
             {currentUser ? (
               <div className="flex items-center space-x-4">
                 <Link
@@ -59,21 +63,21 @@ const Navigation: React.FC = () => {
                   className="flex items-center text-gray-300 hover:text-white transition-colors"
                 >
                   <User className="w-4 h-4 mr-2" />
-                  Dashboard
+                  {t('nav.dashboard')}
                 </Link>
                 {userProfile?.role === 'admin' && (
                   <Link
                     to="/admin"
                     className="text-purple-400 hover:text-purple-300 transition-colors"
                   >
-                    Admin
+                    {t('nav.admin')}
                   </Link>
                 )}
                 <button
                   onClick={handleLogout}
                   className="text-gray-300 hover:text-white transition-colors"
                 >
-                  Logout
+                  {t('nav.logout')}
                 </button>
               </div>
             ) : (
@@ -83,14 +87,14 @@ const Navigation: React.FC = () => {
                   className="flex items-center text-gray-300 hover:text-white transition-colors"
                 >
                   <LogIn className="w-4 h-4 mr-2" />
-                  Login
+                  {t('nav.login')}
                 </Link>
                 <Link
                   to="/register"
                   className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg hover:shadow-emerald-500/25 transition-all duration-200 flex items-center"
                 >
                   <UserPlus className="w-4 h-4 mr-2" />
-                  Register
+                  {t('nav.register')}
                 </Link>
               </>
             )}
@@ -111,79 +115,43 @@ const Navigation: React.FC = () => {
         {isOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 bg-gray-800 rounded-lg mt-2">
-              <Link
-                to="/"
-                className="block px-3 py-2 text-gray-300 hover:text-white transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Home
+              <Link to="/" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>
+                {t('nav.home')}
               </Link>
-              <a
-                href="#plans"
-                className="block px-3 py-2 text-gray-300 hover:text-white transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Plans
+              <a href="#plans" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>
+                {t('nav.plans')}
               </a>
-              <a
-                href="#about"
-                className="block px-3 py-2 text-gray-300 hover:text-white transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                About
+              <a href="#about" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>
+                {t('nav.about')}
               </a>
-              <a
-                href="#faq"
-                className="block px-3 py-2 text-gray-300 hover:text-white transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                FAQ
+              <a href="#faq" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>
+                {t('nav.faq')}
               </a>
-              
-              <div className="border-t border-gray-700 pt-3">
+
+              <div className="border-t border-gray-700 pt-3 space-y-2">
+                <LanguageSwitcher />
+
                 {currentUser ? (
                   <>
-                    <Link
-                      to="/dashboard"
-                      className="block px-3 py-2 text-gray-300 hover:text-white transition-colors"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Dashboard
+                    <Link to="/dashboard" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>
+                      {t('nav.dashboard')}
                     </Link>
                     {userProfile?.role === 'admin' && (
-                      <Link
-                        to="/admin"
-                        className="block px-3 py-2 text-purple-400 hover:text-purple-300 transition-colors"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        Admin
+                      <Link to="/admin" className="block px-3 py-2 text-purple-400 hover:text-purple-300 transition-colors" onClick={() => setIsOpen(false)}>
+                        {t('nav.admin')}
                       </Link>
                     )}
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setIsOpen(false);
-                      }}
-                      className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white transition-colors"
-                    >
-                      Logout
+                    <button onClick={() => { handleLogout(); setIsOpen(false); }} className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white transition-colors">
+                      {t('nav.logout')}
                     </button>
                   </>
                 ) : (
                   <>
-                    <Link
-                      to="/login"
-                      className="block px-3 py-2 text-gray-300 hover:text-white transition-colors"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Login
+                    <Link to="/login" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>
+                      {t('nav.login')}
                     </Link>
-                    <Link
-                      to="/register"
-                      className="block px-3 py-2 text-emerald-400 hover:text-emerald-300 transition-colors"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Register
+                    <Link to="/register" className="block px-3 py-2 text-emerald-400 hover:text-emerald-300 transition-colors" onClick={() => setIsOpen(false)}>
+                      {t('nav.register')}
                     </Link>
                   </>
                 )}
