@@ -89,7 +89,7 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
                   <div>
                     <strong>Registration Number:</strong>
                     <br />
-                    SAC-2024-001847
+                    9950474
                   </div>
                   <div>
                     <strong>Date of Incorporation:</strong>
