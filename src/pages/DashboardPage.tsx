@@ -53,14 +53,6 @@ const DashboardPage: React.FC = () => {
   const [selectedMethod, setSelectedMethod] = useState("");
   const [depositAmount, setDepositAmount] = useState<number>(0);
 
-  useEffect(() => {
-    async function loadMethods() {
-      const res = await getUserWithdrawalMethods();
-      setMethods(res.data);
-    }
-    loadMethods();
-  }, []);
-
   const handleDeposit = async () => {
     if (!selectedMethod || !depositAmount) return;
     const transactionId = "TXN" + Date.now(); // unique reference

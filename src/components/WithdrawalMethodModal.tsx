@@ -3,55 +3,21 @@ import { X, Wallet } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { createWithdrawalMethod } from "../api/axios"; // ✅ use your axios.ts
+import toast from "react-hot-toast"; // or whatever toast lib you use
 
-// Mocking imports to make the component self-contained
-const useAuth = () => ({
-  currentUser: {
-    uid: "mockUserId123",
-  },
+const withdrawalMethodSchema = z.object({
+  type: z.enum(["crypto"]), // Only crypto is allowed
+  address: z.string().min(1, "Crypto address is required"),
+  isPrimary: z.boolean().default(false),
 });
-
-interface WithdrawalMethodData {
-  methodName: string;
-  accountDetails: string;
-  isDefault: boolean;
-}
-
-const createWithdrawalMethod = (data: WithdrawalMethodData) => {
-  console.log("Mock API call to create withdrawal method:", data);
-  return new Promise((resolve) => setTimeout(resolve, 1000));
-};
-
-const toast = {
-  success: (message: string) => console.log("Toast success:", message),
-  error: (message: string) => console.log("Toast error:", message),
-};
-
-const withdrawalMethodSchema = z
-  .object({
-    type: z.enum(["crypto"]), // Only crypto is now allowed
-    address: z.string().min(1, "Crypto address is required"),
-    isPrimary: z.boolean().default(false),
-  })
-  .refine(
-    (data) => {
-      // Validation now only checks for crypto
-      if (data.type === "crypto") {
-        return data.address;
-      }
-      return false;
-    },
-    {
-      message: "Please fill in all required fields for the selected method",
-    }
-  );
 
 type WithdrawalMethodFormData = z.infer<typeof withdrawalMethodSchema>;
 
 interface WithdrawalMethodModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: () => void; // refresh list after success
 }
 
 const WithdrawalMethodModal: React.FC<WithdrawalMethodModalProps> = ({
@@ -59,7 +25,6 @@ const WithdrawalMethodModal: React.FC<WithdrawalMethodModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const { currentUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -67,15 +32,17 @@ const WithdrawalMethodModal: React.FC<WithdrawalMethodModalProps> = ({
     handleSubmit,
     formState: { errors },
     reset,
-    setValue
+    setValue,
   } = useForm<WithdrawalMethodFormData>({
     resolver: zodResolver(withdrawalMethodSchema),
     defaultValues: {
-      type: "crypto" // Set the default type to crypto
-    }
+      type: "crypto", // default
+      address: "",
+      isPrimary: false,
+    },
   });
 
-  // Set the value on initial load, since there's only one option
+  // Always enforce crypto as the type on modal open
   useEffect(() => {
     if (isOpen) {
       setValue("type", "crypto");
@@ -83,13 +50,9 @@ const WithdrawalMethodModal: React.FC<WithdrawalMethodModalProps> = ({
   }, [isOpen, setValue]);
 
   const onSubmit = async (data: WithdrawalMethodFormData) => {
-    if (!currentUser) return;
-
     setIsLoading(true);
     try {
-      const details: { address: string } = {
-        address: data.address
-      };
+      const details = { address: data.address };
 
       await createWithdrawalMethod({
         methodName: data.type,
@@ -98,11 +61,12 @@ const WithdrawalMethodModal: React.FC<WithdrawalMethodModalProps> = ({
       });
 
       toast.success("Withdrawal method added successfully!");
-      reset();
-      onSuccess();
-    } catch (error) {
+      reset({ type: "crypto", address: "", isPrimary: false });
+      onSuccess(); // ✅ tell dashboard to refresh
+      onClose();
+    } catch (error: any) {
       console.error("Error adding withdrawal method:", error);
-      toast.error("Failed to add withdrawal method");
+      toast.error(error.response?.data?.message || "Failed to add withdrawal method");
     } finally {
       setIsLoading(false);
     }
@@ -115,9 +79,7 @@ const WithdrawalMethodModal: React.FC<WithdrawalMethodModalProps> = ({
       <div className="bg-gray-800 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-gray-700">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
-          <h2 className="text-xl font-bold text-white">
-            Add Withdrawal Method
-          </h2>
+          <h2 className="text-xl font-bold text-white">Add Withdrawal Method</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-white transition-colors"
@@ -128,7 +90,7 @@ const WithdrawalMethodModal: React.FC<WithdrawalMethodModalProps> = ({
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
-          {/* Method Type (simplified to only show Crypto) */}
+          {/* Method Type */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-3">
               Withdrawal Method
@@ -140,12 +102,8 @@ const WithdrawalMethodModal: React.FC<WithdrawalMethodModalProps> = ({
                   type="radio"
                   value="crypto"
                   className="sr-only"
-                  checked
-                  readOnly
                 />
-                <div
-                  className="flex flex-col items-center p-4 border-2 rounded-lg transition-all border-emerald-500 bg-emerald-500/10"
-                >
+                <div className="flex flex-col items-center p-4 border-2 rounded-lg transition-all border-emerald-500 bg-emerald-500/10">
                   <Wallet className="w-6 h-6 text-gray-400 mb-2" />
                   <span className="text-sm text-white">Crypto</span>
                 </div>
@@ -153,22 +111,20 @@ const WithdrawalMethodModal: React.FC<WithdrawalMethodModalProps> = ({
             </div>
           </div>
 
-          {/* Crypto Details */}
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Wallet Address
-              </label>
-              <input
-                {...register("address")}
-                type="text"
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                placeholder="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
-              />
-              {errors.address && (
-                <p className="text-red-400 text-sm mt-1">{errors.address.message}</p>
-              )}
-            </div>
+          {/* Crypto Address */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Wallet Address
+            </label>
+            <input
+              {...register("address")}
+              type="text"
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              placeholder="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
+            />
+            {errors.address && (
+              <p className="text-red-400 text-sm mt-1">{errors.address.message}</p>
+            )}
           </div>
 
           {/* Primary Method */}
