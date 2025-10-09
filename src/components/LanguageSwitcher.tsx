@@ -5,7 +5,7 @@ const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation(); // Get i18n instance
 
   const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng); // <-- This actually switches the language globally
+    i18n.changeLanguage(lng); // Switch language globally
   };
 
   const currentLang = i18n.language; // current active language
@@ -25,15 +25,15 @@ const LanguageSwitcher: React.FC = () => {
         </span>
       </button>
       <button
-        onClick={() => changeLanguage('fr')}
+        onClick={() => changeLanguage('pt')}
         className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-          currentLang === 'fr'
+          currentLang === 'pt'
             ? 'bg-emerald-500 text-white shadow-md'
             : 'text-gray-400 hover:text-white'
         }`}
       >
-        <span role="img" aria-label="French">
-          🇫🇷 FR
+        <span role="img" aria-label="Portuguese">
+          🇧🇷 PT
         </span>
       </button>
     </div>

@@ -6,6 +6,7 @@
     "signIn": "Sign In",
     "email": "Email Address",
     "password": "Password",
+    "emailPlaceholder": "Enter your email",
     "forgot": "Forgot your password?",
     "demoAdmin": "Admin: admin@sovereignassets.com / admin123",
     "demoUser": "User: john@example.com / user123",

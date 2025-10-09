@@ -20,6 +20,7 @@ import {
   getUserWithdrawalMethods,
   createDeposit,
 } from "../api/axios";
+import { getInvestmentPlan } from "../util/investment";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 import InvestmentModal from "../components/InvestmentModal";
@@ -352,8 +353,9 @@ const DashboardPage: React.FC = () => {
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {investments.slice(0, 4).map((investment) => {
-                      const plan = investmentPlans.find(
-                        (p) => p._id === investment.plan
+                      const plan = getInvestmentPlan(
+                        investment,
+                        investmentPlans
                       );
 
                       const start = parseDate(investment.startDate);
@@ -373,9 +375,9 @@ const DashboardPage: React.FC = () => {
                         >
                           <div className="flex justify-between items-start mb-3">
                             <div>
-                              <h3 className="font-medium text-white">
-                                {plan?.planName || "Unknown Plan"}
-                              </h3>
+                              <h3>{plan ? plan.planName : "Unknown Plan"}</h3>
+                              <p>Return: {plan ? plan.profitPercent : 0}%</p>
+
                               <p className="text-gray-400 text-sm">
                                 ${investment.amount?.toLocaleString()}
                               </p>
@@ -473,8 +475,9 @@ const DashboardPage: React.FC = () => {
                     <tbody>
                       {investments.map((investment) => {
                         const plan = investmentPlans.find(
-                          (p) => p._id === investment.plan
+                          (p) => String(p._id) === String(investment.plan) // ✅
                         );
+
                         return (
                           <tr
                             key={investment._id}

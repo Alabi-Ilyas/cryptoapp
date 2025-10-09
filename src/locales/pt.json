@@ -1,0 +1,423 @@
+{
+  "appName": "Sovereign Assets Capital",
+  "login": {
+    "welcome": "Bem-vindo de volta",
+    "signIn": "Entrar",
+    "email": "Endereço de e-mail",
+    "password": "Senha",
+    "emailPlaceholder": "Digite seu e-mail",
+    "forgot": "Esqueceu sua senha?",
+    "demoAdmin": "Admin: admin@sovereignassets.com / admin123",
+    "demoUser": "Usuário: john@example.com / user123",
+    "backToHome": "Voltar para o Início",
+    "signInSubheading": "Faça login na sua conta para continuar",
+    "passwordPlaceholder": "Digite sua senha",
+    "forgotFeature": "Recurso de redefinição de senha em breve!",
+    "signingIn": "Entrando...",
+    "noAccount": "Não tem uma conta?",
+    "demoCredentials": "Credenciais de Demonstração"
+  },
+  "register": {
+    "backToHome": "Voltar para o Início",
+    "createAccount": "Criar Conta",
+    "subHeading": "Junte-se a milhares de investidores de sucesso",
+    "firstName": "Nome",
+    "firstNamePlaceholder": "João",
+    "lastName": "Sobrenome",
+    "lastNamePlaceholder": "Silva",
+    "password": "Senha",
+    "passwordPlaceholder": "Crie uma senha forte",
+    "confirmPassword": "Confirmar Senha",
+    "confirmPasswordPlaceholder": "Confirme sua senha",
+    "creatingAccount": "Criando conta...",
+    "alreadyHaveAccount": "Já tem uma conta?"
+  },
+  "errors": {
+    "allFieldsRequired": "Todos os campos são obrigatórios",
+    "invalidCredentials": "E-mail ou senha inválidos",
+    "captchaRequired": "Por favor, complete o CAPTCHA",
+    "firstNameMin": "O nome deve ter pelo menos 2 caracteres",
+    "lastNameMin": "O sobrenome deve ter pelo menos 2 caracteres",
+    "passwordsDontMatch": "As senhas não coincidem",
+    "invalidEmail": "Por favor, insira um endereço de e-mail válido",
+    "passwordMin": "A senha deve ter pelo menos 6 caracteres"
+  },
+  "success": {
+    "login": "Login bem-sucedido!",
+    "logout": "Saída bem-sucedida!",
+    "register": "Conta criada com sucesso!"
+  },
+  "dashboard": {
+    "overview": "Visão Geral",
+    "users": "Usuários",
+    "transactions": "Transações",
+    "totalUsers": "Total de Usuários",
+    "totalInvested": "Total Investido",
+    "totalProfit": "Lucro Total",
+    "pendingTransactions": "Transações Pendentes",
+    "recentTransactions": "Transações Recentes",
+    "approveTransaction": "Aprovar Transação",
+    "noTransactions": "Nenhuma transação disponível",
+    "logout": "Sair",
+    "depositRequested": "Solicitação de depósito enviada com sucesso!",
+    "deposit_failed": "A solicitação de depósito falhou. Por favor, tente novamente.",
+    "failed_to_load": "Falha ao carregar os dados. Por favor, tente novamente.",
+    "loading": "Carregando...",
+    "title": "Painel",
+    "welcome": "Bem-vindo, {{name}}",
+    "total_balance": "Saldo Total",
+    "active_investments": "Investimentos Ativos",
+    "portfolio_overview": "Visão Geral do Portfólio",
+    "new_investment": "Novo Investimento",
+    "no_investments": "Nenhum Investimento Ainda",
+    "first_investment": "Faça seu primeiro investimento para começar a ganhar!",
+    "progress": "Progresso",
+    "profit": "Lucro",
+    "my_investments": "Meus Investimentos",
+    "transaction_history": "Histórico de Transações",
+    "account_settings": "Configurações da Conta",
+    "profile_info": "Informações do Perfil",
+    "full_name": "Nome Completo",
+    "email": "E-mail",
+    "member_since": "Membro Desde",
+    "withdrawal_methods": "Métodos de Retirada",
+    "add_method": "Adicionar Método",
+    "no_methods": "Nenhum método de retirada adicionado",
+    "primary": "Principal",
+    "security_settings": "Configurações de Segurança",
+    "two_factor_auth": "Autenticação de Dois Fatores",
+    "2fa_description": "Aumente a segurança da sua conta ativando a autenticação de dois fatores (2FA).",
+    "2fa_enabled": "2FA Ativado",
+    "2fa_disabled": "2FA Desativado",
+    "2fa_manage": "Gerenciar 2FA",
+    "2fa_enable": "Ativar 2FA",
+    "security_status": "Status de Segurança",
+    "ssl_encryption": "Criptografia SSL",
+    "account_verification": "Verificação da Conta",
+    "secure_connection": "Conexão Segura",
+    "status_active": "Ativo",
+    "status_inactive": "Inativo",
+    "tabs": {
+      "overview": "Visão Geral",
+      "investments": "Investimentos",
+      "transactions": "Transações",
+      "settings": "Configurações",
+      "security": "Segurança"
+    },
+    "table": {
+      "plan": "Plano",
+      "amount": "Valor",
+      "profit": "Lucro",
+      "status": "Status",
+      "end_date": "Data Final",
+      "date": "Data",
+      "type": "Tipo",
+      "reference": "Referência"
+    }
+  },
+  "users": {
+    "name": "Nome",
+    "email": "E-mail",
+    "role": "Função",
+    "status": "Status",
+    "created": "Criado em",
+    "lastLogin": "Último Login",
+    "verified": "Verificado",
+    "unverified": "Não Verificado"
+  },
+  "transactions": {
+    "type": "Tipo",
+    "amount": "Valor",
+    "status": "Status",
+    "pending": "Pendente",
+    "approved": "Aprovado",
+    "rejected": "Rejeitado"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "loadingAdminDashboard": "Carregando painel de administração...",
+    "back": "Voltar",
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "search": "Buscar",
+    "actions": "Ações",
+    "yes": "Sim",
+    "no": "Não",
+    "date": "Data",
+    "actionFailed": "Ação falhou",
+    "actionSuccessful": "Ação bem-sucedida"
+  },
+  "hero": {
+    "heading": {
+      "main": "Garanta Seu Futuro",
+      "highlight": "Financeiro"
+    },
+    "subheading": "Junte-se a mais de 50.000 investidores em todo o mundo que confiam na Sovereign Assets Capital para oportunidades profissionais de investimento em criptomoedas com retornos garantidos.",
+    "features": {
+      "secure": "Seguro e Regulamentado",
+      "returns": "Retornos de até 98%",
+      "instant": "Retiradas Instantâneas"
+    },
+    "cta": {
+      "start": "Comece a Investir Hoje",
+      "view_plans": "Ver Planos de Investimento"
+    },
+    "stats": {
+      "active_investors": "Investidores Ativos",
+      "total_invested": "Total Investido",
+      "success_rate": "Taxa de Sucesso",
+      "support": "Suporte 24/7"
+    }
+  },
+  "nav": {
+    "home": "Início",
+    "plans": "Planos",
+    "about": "Sobre",
+    "faq": "FAQ",
+    "dashboard": "Painel",
+    "admin": "Admin",
+    "login": "Entrar",
+    "register": "Registrar",
+    "logout": "Sair"
+  },
+  "appTagline": "Capital",
+  "stats": {
+    "heading": "Confiado por Milhares em Todo o Mundo",
+    "subheading": "Junte-se à nossa crescente comunidade de investidores de sucesso e comece a construir sua riqueza hoje",
+    "active_investors": "Investidores Ativos",
+    "total_invested": "Total Investido",
+    "success_rate": "Taxa de Sucesso",
+    "years_experience": "Anos de Experiência",
+    "live_indicator": "Estatísticas ao Vivo - Atualizadas em Tempo Real"
+  },
+  "plans": {
+    "loading": "Carregando planos de investimento...",
+    "heading": "Escolha Seu Plano de Investimento",
+    "subheading": "Selecione entre nossos planos de investimento cuidadosamente elaborados, projetados para maximizar seus retornos e minimizar os riscos por meio de gerenciamento profissional de portfólio.",
+    "popular": "Mais Popular",
+    "untitled": "Plano Sem Título",
+    "return": "Retorno",
+    "duration": "Duração",
+    "amount_min": "Mín",
+    "amount_max": "Máx",
+    "unlimited": "Ilimitado",
+    "features": {
+      "secure": "Seguro e protegido",
+      "support": "Suporte 24/7",
+      "daily_payout": "Pagamentos diários"
+    },
+    "invest_now": "Investir Agora",
+    "get_started": "Começar",
+    "example_investment": "Exemplo",
+    "profit": "Lucro"
+  },
+  "why": {
+    "heading": "Por que escolher a Sovereign Assets Capital?",
+    "subheading": "Combinamos tecnologia de ponta com estratégias de investimento comprovadas para oferecer retornos excepcionais, mantendo os mais altos padrões de segurança e transparência.",
+    "features": {
+      "security": {
+        "title": "Segurança de Nível Bancário",
+        "description": "Seus investimentos são protegidos por criptografia de nível militar e protocolos de segurança multicamadas."
+      },
+      "track_record": {
+        "title": "Histórico Comprovado",
+        "description": "Mais de 5 anos de retornos consistentes com uma taxa de sucesso de 98% em todos os planos de investimento."
+      },
+      "quick_withdraw": {
+        "title": "Retiradas Rápidas",
+        "description": "Acesse seus lucros a qualquer momento com nosso sistema de retirada instantânea - fundos disponíveis em 24 horas."
+      },
+      "expert_team": {
+        "title": "Equipe de Especialistas",
+        "description": "Nossos analistas financeiros certificados e especialistas em cripto gerenciam seus investimentos com precisão."
+      },
+      "recognition": {
+        "title": "Reconhecimento da Indústria",
+        "description": "Plataforma premiada, reconhecida por instituições financeiras e órgãos reguladores líderes."
+      },
+      "support": {
+        "title": "Suporte 24/7",
+        "description": "Suporte ao cliente 24 horas por dia para ajudá-lo com quaisquer dúvidas ou preocupações."
+      }
+    },
+    "stats_heading": "Confiado por Investidores em Todo o Mundo",
+    "stats_subheading": "Junte-se a milhares de investidores satisfeitos que nos escolheram como seu parceiro de investimento",
+    "stats": {
+      "active_investors": "Investidores Ativos",
+      "total_invested": "Total Investido",
+      "success_rate": "Taxa de Sucesso",
+      "years_experience": "Anos de Experiência"
+    },
+    "cert_heading": "Regulamentada e Certificada - Empresa Verificada",
+    "certifications": {
+      "sec_registered": "Registrado na SEC",
+      "finra_member": "Membro da FINRA",
+      "sipc_protected": "Protegido pelo SIPC",
+      "iso_certified": "Certificado ISO 27001",
+      "soc_compliant": "Conformidade SOC 2"
+    },
+    "cert_proof_heading": "Verificação da Empresa",
+    "cert_proof_desc": "Veja nosso Certificado de Incorporação oficial e documentação de conformidade regulatória",
+    "cert_proof_button": "Ver Prova de Certificação"
+  },
+  "video": {
+    "heading": "Aprenda Como Geramos Retornos",
+    "subheading": "Assista ao nosso guia completo para entender nossas estratégias de investimento e como entregamos consistentemente retornos lucrativos para nossos investidores.",
+    "thumbnailAlt": "Miniatura do Vídeo - Sovereign Assets Capital",
+    "mainTitle": "Sovereign Assets Capital: Seu Caminho para a Liberdade Financeira",
+    "mainDescription": "Descubra como nossa equipe de especialistas usa algoritmos avançados e análise de mercado para gerar retornos consistentes para nossos investidores.",
+    "views": "{{count}} visualizações",
+    "rating": "avaliação {{rating}}",
+    "duration": "{{time}}",
+    "videoPlayer": "Player de Vídeo",
+    "videoPlaceholder": "Em uma implementação real, o vídeo do YouTube seria incorporado aqui",
+    "relatedHeading": "Vídeos Relacionados",
+    "related": [
+      "Começando com Investimento em Cripto",
+      "Entendendo a Volatilidade do Mercado",
+      "Estratégias de Gerenciamento de Risco"
+    ],
+    "viewsText": "visualizações",
+    "whyChooseHeading": "Por que escolher a Sovereign Assets?",
+    "whyChoose": [
+      "Histórico comprovado com taxa de sucesso de 98%",
+      "Algoritmos de negociação avançados com IA",
+      "Processo de investimento transparente e seguro",
+      "Suporte ao cliente e orientação 24/7",
+      "Operações regulamentadas e em conformidade"
+    ],
+    "ctaHeading": "Pronto para Começar?",
+    "ctaDescription": "Junte-se a milhares de investidores de sucesso hoje",
+    "startButton": "Comece a Investir",
+    "demoButton": "Agendar Chamada de Demonstração"
+  },
+  "testimonials": {
+    "header": "O que Nossos Investidores Dizem",
+    "subHeader": "Não acredite apenas em nossa palavra. Veja o que nossos investidores satisfeitos têm a dizer sobre sua experiência com a Sovereign Assets Capital.",
+    "roles": {
+      "businessOwner": "Dono(a) de Negócio",
+      "softwareEngineer": "Engenheiro(a) de Software",
+      "marketingDirector": "Diretor(a) de Marketing",
+      "retiredTeacher": "Professor(a) Aposentado(a)",
+      "healthcareProfessional": "Profissional de Saúde",
+      "financialAdvisor": "Consultor(a) Financeiro(a)"
+    },
+    "texts": {
+      "sarah": "A Sovereign Assets transformou meu futuro financeiro. Em apenas 6 meses, vi retornos consistentes que superam minhas expectativas. Sua equipe profissional e abordagem transparente me dão total confiança.",
+      "michael": "Como profissional de tecnologia, aprecio seus algoritmos sofisticados e abordagem baseada em dados. A plataforma é intuitiva e os retornos falam por si. Altamente recomendado!",
+      "emma": "Eu era cético em relação a investimentos em cripto até encontrar a Sovereign Assets. Seus recursos educacionais e orientação especializada me ajudaram a tomar decisões informadas. Os resultados foram excelentes.",
+      "david": "Aos 62 anos, pensei que era tarde demais para começar a investir em cripto. A Sovereign Assets me provou o contrário. Seus planos conservadores proporcionaram uma renda estável para minha aposentadoria.",
+      "lisa": "O suporte ao cliente é excepcional. Eles estão sempre disponíveis para responder a perguntas e fornecer orientação. Meu investimento cresceu de forma constante e eu não poderia estar mais feliz.",
+      "james": "Mesmo como profissional financeiro, estou impressionado com sua estratégia e execução. A Sovereign Assets tornou-se uma parte fundamental do meu portfólio diversificado."
+    },
+    "labels": {
+      "totalProfit": "Lucro Total",
+      "duration": "Duração"
+    },
+    "stats": {
+      "averageRating": "Avaliação Média",
+      "happyInvestors": "Investidores Felizes",
+      "successRate": "Taxa de Sucesso",
+      "totalProfits": "Total de Lucros Pagos"
+    },
+    "trustHeader": "Junte-se à Nossa Comunidade de Investidores de Sucesso",
+    "cta": {
+      "start": "Comece Sua História de Sucesso",
+      "readMore": "Ler Mais Avaliações"
+    }
+  },
+  "footer": {
+    "company": {
+      "alt": "Sovereign Assets Capital",
+      "name": "Sovereign Assets",
+      "tagline": "Capital",
+      "description": "Plataforma profissional de investimento em criptomoedas que oferece retornos consistentes por meio de estratégias de negociação avançadas e gerenciamento de risco."
+    },
+    "quickLinks": "Links Rápidos",
+    "links": {
+      "home": "Início",
+      "investmentPlans": "Planos de Investimento",
+      "aboutUs": "Sobre Nós",
+      "liveRates": "Cotações ao Vivo",
+      "faq": "FAQ"
+    },
+    "servicesTitle": "Serviços",
+    "services": {
+      "cryptocurrencyInvestment": "Investimento em Criptomoedas",
+      "portfolioManagement": "Gerenciamento de Portfólio",
+      "riskAssessment": "Avaliação de Risco",
+      "marketAnalysis": "Análise de Mercado",
+      "investmentConsulting": "Consultoria de Investimento"
+    },
+    "contact": {
+      "title": "Fale Conosco",
+      "email": "support@sovereignassets.com",
+      "phone": "+13434345109",
+      "address": "AB Trav Och Gallop, Estocolmo, Suécia"
+    },
+    "newsletter": {
+      "title": "Mantenha-se Atualizado",
+      "placeholder": "Seu e-mail",
+      "button": "Inscrever-se"
+    },
+    "bottom": {
+      "copyRight": "© 2024 Sovereign Assets Capital. Todos os direitos reservados.",
+      "privacyPolicy": "Política de Privacidade",
+      "termsOfService": "Termos de Serviço",
+      "cookiePolicy": "Política de Cookies",
+      "disclaimer": "Aviso Legal"
+    },
+    "disclaimer": {
+      "title": "Aviso de Risco:",
+      "text": "Investimentos em criptomoedas carregam riscos inerentes. O desempenho passado não garante resultados futuros. Por favor, invista com responsabilidade e apenas invista o que você pode perder. A Sovereign Assets Capital está comprometida com a transparência e a conformidade regulatória em todas as jurisdições onde operamos."
+    }
+  },
+  "faq": {
+    "loading": "Carregando FAQs...",
+    "errorLoading": "Erro ao carregar FAQs",
+    "header": "Perguntas Frequentes",
+    "subHeader": "Encontre respostas para perguntas comuns sobre nossa plataforma de investimentos, medidas de segurança e como começar.",
+    "searchPlaceholder": "Buscar nos FAQs...",
+    "noResults": "Nenhum FAQ encontrado para sua busca.",
+    "contactHeader": "Ainda tem Dúvidas?",
+    "contactSubHeader": "Nossa equipe de suporte está disponível 24/7 para ajudar com quaisquer dúvidas ou preocupações que você possa ter sobre seus investimentos.",
+    "contactButton": "Contatar Suporte",
+    "scheduleCallButton": "Agendar Chamada"
+  },
+  "admin": {
+    "loadingDashboard": "Carregando painel de administração...",
+    "errorLoading": "Falha ao carregar dados do administrador",
+    "transactionApproved": "Transação aprovada!",
+    "errorApproveTransaction": "Falha ao aprovar transação",
+    "dashboard": "Painel do Administrador",
+    "logout": "Sair",
+    "logoAlt": "Logo do Admin",
+    "tabs": {
+      "overview": "Visão Geral",
+      "users": "Usuários",
+      "transactions": "Transações"
+    },
+    "stats": {
+      "totalUsers": "Total de Usuários",
+      "totalInvested": "Total Investido",
+      "totalProfit": "Lucro Total",
+      "pendingTransactions": "Transações Pendentes"
+    },
+    "table": {
+      "name": "Nome",
+      "email": "E-mail",
+      "role": "Função",
+      "status": "Status",
+      "created": "Criado em",
+      "lastLogin": "Último Login"
+    },
+    "verified": "Verificado",
+    "unverified": "Não Verificado",
+    "n_a": "N/A",
+    "never": "Nunca",
+    "recentTransactions": "Transações Recentes",
+    "status": "Status",
+    "approveTransaction": "Aprovar Transação",
+    "noTransactions": "Nenhuma transação disponível."
+  }
+}
